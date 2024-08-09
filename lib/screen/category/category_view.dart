@@ -6,7 +6,8 @@ import "package:meals/data/dummy_data.dart";
 import "package:meals/screen/meal/meal_screen.dart";
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key,  required this.addFavourite,});
+  final void Function(Meal meal) addFavourite;
 
   void _selectedCategory(BuildContext context, Category category) {
     final filteredMeal = dummyMeals
@@ -17,35 +18,30 @@ class CategoriesScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (ctx) =>
-            MealScreen(title: category.title, meals: filteredMeal),
+            MealScreen(title: category.title, meals: filteredMeal, addFavourite: addFavourite,),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Select your category"),
+    return GridView(
+      padding: const EdgeInsets.all(20),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.5,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(20),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.5,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        children: [
-          for (final category in availableCategories)
-            CategoryGridItem(
-              category: category,
-              selectedCategory: () {
-                _selectedCategory(context, category);
-              },
-            ),
-        ],
-      ),
+      children: [
+        for (final category in availableCategories)
+          CategoryGridItem(
+            category: category,
+            selectedCategory: () {
+              _selectedCategory(context, category);
+            },
+          ),
+      ],
     );
   }
 }
